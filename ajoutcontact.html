@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Contact</title>
+    <!-- Lien Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Lien vers le fichier CSS -->
+     
+    <link rel="stylesheet" href="ajoutcontact.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>Gestion des Contacts</h3>
+            </div>
+            <div class="card-body">
+                <form id="addContactForm">
+                    
+                    <!-- Valeur -->
+                    <div class="mb-3">
+                        <label for="valeur" class="form-label">Valeur du Contact</label>
+                        <input type="text" class="form-control" id="valeur" name="valeur" placeholder="Ex: email@example.com ou +225 0123456789" required>
+                    </div>
+                    
+                    <!-- Est Public -->
+                    <div class="mb-3">
+                        <label for="est_public" class="form-label">Contact Public ?</label>
+                        <select id="est_public" name="est_public" class="form-select" required>
+                            <option value="" disabled selected>Choisissez une option</option>
+                            <option value="true">Oui</option>
+                            <option value="false">Non</option>
+                        </select>
+                    </div>
+
+                    <!-- Personne ID -->
+                    <div class="mb-3">
+                        <label for="personne_id" class="form-label">Ce contact appartient à :</label>
+                        <select id="personne_id" name="personne_id" class="form-select" required>
+                            <option value="" disabled selected>Chargement...</option>
+                        </select>
+                    </div>
+                    
+                    <script>
+                        // Fonction pour charger les personnes de telle sorte que lorsque je clique ici on arrive à voir 
+                        // la liste des personnes qui sont actuellement inscrits pour qu'un contact soit attribuer à une personne 
+                        async function loadPersonnes() {
+                            try {
+                                const response = await fetch('http://localhost:8000/personnes/'); // URL de votre API
+                                if (!response.ok) {
+                                    throw new Error('Erreur lors du chargement des personnes.');
+                                }
+                                const data = await response.json();
+                                
+                                // Vérifie si les données sont correctes
+                                const personnes = data.personnes || [];
+                                
+                                // Référence au menu déroulant
+                                const selectElement = document.getElementById('personne_id');
+                                
+                                // Nettoyer les anciennes options
+                                selectElement.innerHTML = '<option value="" disabled selected>Choisissez une personne</option>';
+                                
+                                // Ajouter chaque personne comme option
+                                personnes.forEach(personne => {
+                                    const option = document.createElement('option');
+                                    option.value = personne.id; // Utilisez l'ID comme valeur
+                                    option.textContent = `${personne.nom} ${personne.prenom}`; // Texte à afficher
+                                    selectElement.appendChild(option);
+                                });
+                            } catch (error) {
+                                console.error('Erreur :', error);
+                                alert('Impossible de charger les personnes.');
+                            }
+                        }
+                    
+                        // Charger les personnes lorsque la page est prête
+                        document.addEventListener('DOMContentLoaded', loadPersonnes);
+                    </script>
+                    
+                    <!-- Type de Contact -->
+                    <div class="mb-3">
+                        <label for="type_contact_id" class="form-label">Type de Contact</label>
+                        <select id="type_contact_id" name="type_contact_id" class="form-select" required>
+                            <option value="" disabled selected>Choisissez un type</option>
+                            <option value="1">Email personnel</option>
+                            <option value="2">Téléphone personnel</option>
+                            <option value="3">Téléphone professionnel</option>
+                            <option value="4">Téléphone mobile pour appels uniquement </option>
+                            <option value="5">Téléphone fixe </option>
+                            <option value="6">Boite Postale</option>
+                            <option value="7">Adresse professionnelle</option>
+                            <option value="8">Adresse personnelle</option>
+                            <option value="9">WhatsApp</option>
+                            <option value="10">	Adresse de Livraison</option>
+                        </select>
+                    </div>
+
+                    <!-- Service ID -->
+                    
+<div class="mb-3">
+    <label for="service_id" class="form-label">Service Associé</label>
+    <select id="service_id" name="service_id" class="form-select" required>
+        <option value="1">Support Technique </option>
+        <option value="2">Développement Logiciel</option> 
+        <option value="3">Infrastructure Réseau</option> 
+        <option value="4">Gestion des ressources humaines</option> 
+        <option value="5">Gestion financière et comptabilité</option> 
+        <option value="6">Archivage et documentation</option> 
+        <option value="7">Logistique de transport</option> 
+        <option value="24">Logistique de sécurité</option> 
+        <option value="22">Maintenance préventive</option> 
+        <option value="23">Approvisionnement sécuritaire</option> 
+        <option value="23">Approvisionnement logistique</option> 
+        <option value="17">Nettoyage des locaux</option> 
+        <option value="15">Gestion des accès</option> 
+        <option value="18">Désinfection</option> 
+        <option value="10">Gestion des équipements</option> 
+
+    </select>
+</div>
+
+
+                    <button type="submit" class="btn btn-primary w-100">VALIDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('addContactForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const data = {
+        valeur: formData.get('valeur'),
+        est_public: formData.get('est_public') === 'true',
+        personne_id: parseInt(formData.get('personne_id'), 10),
+        type_contact_id: parseInt(formData.get('type_contact_id'), 10),
+        service_id: parseInt(formData.get('service_id'), 10),  // Assurez-vous que c'est un entier
+    };
+
+    try {
+        const response = await fetch('http://localhost:8000/contacts/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            alert('Contact ajouté avec succès !');
+            // Réinitialiser le formulaire ou rediriger si nécessaire
+            event.target.reset();
+        } else {
+            const errorData = await response.json();
+            alert(`Erreur : ${errorData.detail}`);
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi :', error);
+        alert('Une erreur est survenue. Veuillez réessayer.');
+    }
+});
+
+    </script>
+    
+    
+</body>
+</html>
