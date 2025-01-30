@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enregistrement d'une personne</title>
+    <link rel="stylesheet" href="ajoutpersonne.css">
+</head>
+<body>
+    
+    <div class="background">
+        <div class="container">
+            <h1>Fiche D'inscription</h1>
+            <form id="addPersonForm"enctype="multipart/form-data">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" required>
+                
+                <label for="prenom">Prénom</label>
+                <input type="text" id="prenom" name="prenom" required>
+                
+                <label for="date_de_naissance">Date de naissance</label>
+                <input type="date" id="date_de_naissance" name="date_de_naissance" required>
+                
+                <label for="fonction">Fonction</label>
+                <select name="fonction" id="fonction" required>
+                    <option value="Developpeur Logiciel">Développeur Logiciel</option>
+                    <option value="Architecte Logiciel">Architecte Logiciel</option>
+                    <option value="Chef de Projet Logiciel">Chef de Projet Logiciel</option>
+                    <option value="Technicien Support">Technicien Support</option>
+                    <option value="Responsable Support Technique">Responsable Support Technique</option>
+                    <option value="Technicien Réseau">Technicien Réseau</option>
+                    <option value="Ingénieur Réseau">Ingénieur Réseau</option>
+                    <option value="Administrateur Réseau">Administrateur Réseau</option>
+                    <option value="Responsable RH">Responsable RH</option>
+                    <option value="Chargé de Recrutement">Chargé de Recrutement</option>
+                    <option value="Comptable">Comptable</option>
+                    <option value="Contrôleur de Gestion">Contrôleur de Gestion</option>
+                    <option value="Responsable Formation">Responsable Formation</option>
+                    <option value="Archiviste">Archiviste</option>
+                    <option value="Responsable Archivage">Responsable Archivage</option>
+                    <option value="Gestionnaire Paie">Gestionnaire Paie</option>
+                    <option value="Logisticien Transport">Logisticien Transport</option>
+                    <option value="Responsable Logistique">Responsable Logistique</option>
+                    <option value="Formateur en Sécurité Incendie">Formateur en Sécurité Incendie</option>
+                    <option value="Responsable Formation Sécurité">Responsable Formation Sécurité</option>
+                    <option value="Intervenant Urgence">Intervenant Urgence</option>
+                    <option value="Chef d'Intervention Urgence">Chef d'Intervention Urgence</option>
+                    <option value="Responsable Maintenance Préventive">Responsable Maintenance Préventive</option>
+                    <option value="Technicien Maintenance Préventive">Technicien Maintenance Préventive</option>
+                    <option value="Responsable d'Urgence">Responsable d'Urgence</option>
+                    <option value="Agent de Nettoyage">Agent de Nettoyage</option>
+                    <option value="Responsable Entretien">Responsable Entretien</option>
+                    <option value="Technicien Désinfection">Technicien Désinfection</option>
+                    <option value="Responsable Désinfection">Responsable Désinfection</option>
+                    <option value="Technicien Propreté">Technicien Propreté</option>
+                    <option value="Responsable Gestion des Accès">Responsable Gestion des Accès</option>
+                    <option value="Technicien Gestion des Accès">Technicien Gestion des Accès</option>
+                    <option value="Gestionnaire des Équipements">Gestionnaire des Équipements</option>
+                    <option value="Responsable des Equipements">Responsable des Equipements</option>
+                    <option value="Technicien Gestion des Équipements">Technicien Gestion des Équipements</option>
+                </select>
+                <label for="service_id">Dans quel service exercez-vous ?</label>
+                <select id="service_id" name="service_id" required>
+                    
+                    <option value="1">Support Technique </option>
+                    <option value="2">Développement Logiciel </option>
+                    <option value="3">Infrastructure Réseau </option>
+                    <option value="4">Gestion des ressources humaines </option>
+                    <option value="5">Gestion financière et comptabilité </option>
+                    <option value="6">Archivage et documentation </option>
+                    <option value="7">Logistique de transport </option>
+                    <option value="8">Formation incendie </option>
+                    <option value="9">Maintenance des équipements de sécurité incendie </option>
+                    <option value="10">Interventions d’urgence </option>
+                    <option value="11">Maintenance préventive </option>
+                    <option value="12">Nettoyage des locaux </option>
+                    <option value="13">Désinfection </option>
+                    <option value="14">Gestion des accès </option>
+                    <option value="15">	Approvisionnement  </option>
+                    <option value="16">Gestion des équipements </option>
+                </select>
+                <button type="submit">
+                    <img src="/home/aman0712/Documents/maquette app/40358.png" style="width: 20px; margin-right: 9px;">
+                    VALIDER
+                </button>
+            </form>
+            
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+   
+
+    <script>
+        const form = document.getElementById("addPersonForm");
+    
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+    
+            const formData = new FormData(form);
+            try {
+                const response = await fetch("http://127.0.0.1:8000/personnes/", {
+                    method: "POST",
+                    body: formData,
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    document.getElementById("message").innerHTML = `
+                        <p style="color: green;">${data.message}</p>
+                    `;
+                } else {
+                    document.getElementById("message").innerHTML = `
+                        <p style="color: red;">Erreur : ${data.detail}</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = `
+                    <p style="color: red;">Erreur : ${error.message}</p>
+                `;
+            }
+        });
+    </script>
+    
+</body>
+</html>
