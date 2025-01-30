@@ -11,7 +11,7 @@ def calcul_console():
         else:
             print("Erreur :", response.json().get("erreur", "Erreur inconnue."))
     except ValueError:
-        print("Erreur : Veuillez entrer des nombres valides.")
+        print("Erreur : Les nombres entrés ne sont valides ...Veuillez entrer des nombres valides.")
     except requests.RequestException as e:
         print(f"Erreur réseau : {e}")
 
